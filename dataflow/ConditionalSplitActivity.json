@@ -1,0 +1,142 @@
+{
+	"name": "ConditionalSplitActivity",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "EmployeeDataDataSet",
+						"type": "DatasetReference"
+					},
+					"name": "Employees"
+				},
+				{
+					"dataset": {
+						"referenceName": "DepartmentDataDataSet",
+						"type": "DatasetReference"
+					},
+					"name": "Department"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "output",
+						"type": "DatasetReference"
+					},
+					"name": "ITEmployeesSink"
+				},
+				{
+					"dataset": {
+						"referenceName": "output",
+						"type": "DatasetReference"
+					},
+					"name": "HREmployeesSink"
+				},
+				{
+					"dataset": {
+						"referenceName": "output",
+						"type": "DatasetReference"
+					},
+					"name": "PayrollEmployeesSink"
+				},
+				{
+					"dataset": {
+						"referenceName": "output",
+						"type": "DatasetReference"
+					},
+					"name": "OtherEmployeesSink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "SplitOnDept"
+				},
+				{
+					"name": "join1"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          empid as string,",
+				"          { name} as string,",
+				"          { country} as string,",
+				"          { department} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Employees",
+				"source(output(",
+				"          depid as string,",
+				"          { depname} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Department",
+				"join1 split(equals({ department}, '1'),",
+				"     equals({ department}, '2'),",
+				"     equals({ department}, '3'),",
+				"     disjoint: false) ~> SplitOnDept@(ITEmployees, HREmployees, PayrollEmployees, OtherEmployees)",
+				"derivedColumn1, Department join({ department} == depid,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"Employees derive({ country} = upper({ country}),",
+				"          NewCountryColumn = iif(isNull({ country}), 'Unknown', upper({ country}))) ~> derivedColumn1",
+				"SplitOnDept@ITEmployees sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['ITEmployees.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          empid,",
+				"          { name},",
+				"          { country} = NewCountryColumn,",
+				"          { depname}",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> ITEmployeesSink",
+				"SplitOnDept@HREmployees sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['HREmployees.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          empid,",
+				"          { name},",
+				"          { country} = NewCountryColumn,",
+				"          { depname}",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> HREmployeesSink",
+				"SplitOnDept@PayrollEmployees sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['PayrollEmployees.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          empid,",
+				"          { name},",
+				"          { country} = NewCountryColumn,",
+				"          { depname}",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> PayrollEmployeesSink",
+				"SplitOnDept@OtherEmployees sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['OtherEmployees.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          empid,",
+				"          { name},",
+				"          { country} = NewCountryColumn,",
+				"          { depname}",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> OtherEmployeesSink"
+			]
+		}
+	}
+}

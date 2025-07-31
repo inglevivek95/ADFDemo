@@ -1,0 +1,76 @@
+{
+	"name": "validationActivity",
+	"properties": {
+		"activities": [
+			{
+				"name": "Validation1",
+				"type": "Validation",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "inputDataDataSet",
+						"type": "DatasetReference",
+						"parameters": {
+							"fileName": {
+								"value": "@pipeline().parameters.fileName",
+								"type": "Expression"
+							},
+							"folderName": {
+								"value": "@pipeline().parameters.folderName",
+								"type": "Expression"
+							}
+						}
+					},
+					"timeout": "0.12:00:00",
+					"sleep": 10
+				}
+			},
+			{
+				"name": "Execute Pipeline1",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Validation1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "SwitchActivity",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"folderName": {
+							"value": "@pipeline().parameters.folderName",
+							"type": "Expression"
+						},
+						"fileName": {
+							"value": "@pipeline().parameters.fileName",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"fileName": {
+				"type": "string"
+			},
+			"folderName": {
+				"type": "string",
+				"defaultValue": "output1"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-07-21T11:50:27Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

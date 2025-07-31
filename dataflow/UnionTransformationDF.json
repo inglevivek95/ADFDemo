@@ -1,0 +1,81 @@
+{
+	"name": "UnionTransformationDF",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ITEmployeesDataset",
+						"type": "DatasetReference"
+					},
+					"name": "ITEmployees"
+				},
+				{
+					"dataset": {
+						"referenceName": "HREmployeesDataSet",
+						"type": "DatasetReference"
+					},
+					"name": "HREmployees"
+				},
+				{
+					"dataset": {
+						"referenceName": "PayrollEmployeesDataSet",
+						"type": "DatasetReference"
+					},
+					"name": "PayrollEmployees"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "output",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "UnionAllEmployess"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {5} as string,",
+				"          Ayesha as string,",
+				"          INDIA as string,",
+				"          IT as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> ITEmployees",
+				"source(output(",
+				"          {1} as string,",
+				"          maheer as string,",
+				"          INDIA as string,",
+				"          HR as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> HREmployees",
+				"source(output(",
+				"          {4} as string,",
+				"          Sarfaraj as string,",
+				"          INDIA as string,",
+				"          payroll as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> PayrollEmployees",
+				"ITEmployees, HREmployees, PayrollEmployees union(byName: true)~> UnionAllEmployess",
+				"UnionAllEmployess sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['UnionEmployees.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
+			]
+		}
+	}
+}

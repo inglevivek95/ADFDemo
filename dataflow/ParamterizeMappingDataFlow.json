@@ -1,0 +1,54 @@
+{
+	"name": "ParamterizeMappingDataFlow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "EmployeeGenderCSV",
+						"type": "DatasetReference"
+					},
+					"name": "Employees"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "output",
+						"type": "DatasetReference"
+					},
+					"name": "EmpByDept"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filterByDepartment"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     DeptName as string",
+				"}",
+				"source(output(",
+				"          Empid as string,",
+				"          Name as string,",
+				"          Gender as string,",
+				"          Country as string,",
+				"          Department as string,",
+				"          Salary as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Employees",
+				"Employees filter(Department == $DeptName) ~> filterByDepartment",
+				"filterByDepartment sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['ParameterizedEmpByDept.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> EmpByDept"
+			]
+		}
+	}
+}

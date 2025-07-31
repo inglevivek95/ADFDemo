@@ -1,0 +1,21 @@
+{
+	"name": "ADFDemoVivekTE",
+	"properties": {
+		"globalConfigurations": {
+			"PolicyValidationEnabled": "false",
+			"PipelineBillingEnabled": "true"
+		}
+	},
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned,UserAssigned",
+		"principalId": "fe91b8bd-9f52-40be-8039-e66d5cc03c2c",
+		"tenantId": "b8563372-2214-4eee-87e9-b729ca25aae5",
+		"userAssignedIdentities": {
+			"/subscriptions/320ba2ba-77a1-424f-b37d-ea667233babc/resourcegroups/TestEnvironment/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ADF-UAMI": {
+				"clientId": "2b8e4b22-c025-4cbb-90d0-0f8fde913d15",
+				"principalId": "38a5b187-5007-4ada-8ffa-410141a9fe68"
+			}
+		}
+	}
+}

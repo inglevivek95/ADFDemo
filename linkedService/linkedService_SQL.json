@@ -1,0 +1,22 @@
+{
+	"name": "linkedService_SQL",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"parameters": {
+			"dbName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"server": "mydbserver.windows.db.net",
+			"database": "@{linkedService().dbName}",
+			"encrypt": "mandatory",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "vivek",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDY3RUZGMEFFLTA3RDgtNDQzMi04MjZGLUUwMEZEOUM3RjJFMF80Y2QxOTdmZS1mZjI0LTQxYTktOTMxZC03Yjg0ODc2ZTMzYTgiDQp9"
+		}
+	}
+}

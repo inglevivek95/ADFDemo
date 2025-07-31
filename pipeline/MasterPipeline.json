@@ -1,0 +1,31 @@
+{
+	"name": "MasterPipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute Pipeline1",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pipeline1",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"sourceTable": "Table1",
+						"dbNameFromPipeline": "PRODDB",
+						"destinationTable": "Table2"
+					}
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2025-07-18T11:08:19Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

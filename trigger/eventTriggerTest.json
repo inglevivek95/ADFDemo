@@ -1,0 +1,29 @@
+{
+	"name": "eventTriggerTest",
+	"properties": {
+		"description": "event Trigger Test",
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "CopyData",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"fileName": "@triggerBody().fileName"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/adfdemo/blobs/input/",
+			"blobPathEndsWith": ".txt",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/320ba2ba-77a1-424f-b37d-ea667233babc/resourceGroups/TestEnvironment/providers/Microsoft.Storage/storageAccounts/storageaccountte",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}

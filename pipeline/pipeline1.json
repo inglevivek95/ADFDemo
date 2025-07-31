@@ -1,0 +1,79 @@
+{
+	"name": "pipeline1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "dbo.@{pipeline().parameters.sourceTable}"
+					},
+					{
+						"name": "Destination",
+						"value": "dbo.@{pipeline().parameters.destinationTable}"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "SqlServerSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "dataset_SqlTable",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "dataset_SqlTable",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"parameters": {
+			"sourceTable": {
+				"type": "string",
+				"defaultValue": "tbl_Employees"
+			},
+			"dbNameFromPipeline": {
+				"type": "string",
+				"defaultValue": "ADFSTUDIES"
+			},
+			"destinationTable": {
+				"type": "string",
+				"defaultValue": "tbl_Employees"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-07-29T06:18:47Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

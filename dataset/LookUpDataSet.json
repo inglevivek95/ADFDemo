@@ -1,0 +1,41 @@
+{
+	"name": "LookUpDataSet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LinkedService_storageaccountte",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "output",
+				"container": "adfdemo"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "1",
+				"type": "String"
+			},
+			{
+				"name": "Vivek",
+				"type": "String"
+			},
+			{
+				"name": "india",
+				"type": "String"
+			},
+			{
+				"name": "2",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

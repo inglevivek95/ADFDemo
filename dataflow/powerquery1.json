@@ -1,0 +1,28 @@
+{
+	"name": "powerquery1",
+	"properties": {
+		"type": "WranglingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"name": "EmployeeGenderCSV",
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> EmployeeGenderCSV",
+					"dataset": {
+						"referenceName": "EmployeeGenderCSV",
+						"type": "DatasetReference"
+					}
+				},
+				{
+					"name": "DepartmentDataDataSet",
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> DepartmentDataDataSet",
+					"dataset": {
+						"referenceName": "DepartmentDataDataSet",
+						"type": "DatasetReference"
+					}
+				}
+			],
+			"script": "section Section1;\r\nshared EmployeeGenderCSV = let AdfDoc = AzureStorage.BlobContents(\"https://storageaccountte.blob.core.windows.net/adfdemo/input/employeeGender.csv\"),Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]), PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true]) in  PromotedHeaders;\r\nshared DepartmentDataDataSet = let AdfDoc = AzureStorage.BlobContents(\"https://storageaccountte.blob.core.windows.net/adfdemo/input/department.csv\"),Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]), PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true]) in  PromotedHeaders;\r\nshared UserQuery = let Source = #\"EmployeeGenderCSV\",\r\n  #\"Removed columns\" = Table.RemoveColumns(Source, {\"Country\"}),\r\n  #\"Merged queries\" = Table.NestedJoin(#\"Removed columns\", {\"Department\"}, DepartmentDataDataSet, {\"depid\"}, \"DepartmentDataDataSet\", JoinKind.Inner),\r\n  #\"Expanded DepartmentDataDataSet\" = Table.ExpandTableColumn(#\"Merged queries\", \"DepartmentDataDataSet\", {\"depid\", \" depname\"}, {\"depid\", \" depname\"}),\r\n  #\"Removed columns 1\" = Table.RemoveColumns(#\"Expanded DepartmentDataDataSet\", {\"Department\", \"depid\"}),\r\n  #\"Grouped rows\" = Table.Group(#\"Removed columns 1\", {\" depname\"}, {{\"TotalEmployees\", each Table.RowCount(_), Int64.Type}}) in #\"Grouped rows\";\r\n",
+			"documentLocale": "en-us"
+		}
+	}
+}
